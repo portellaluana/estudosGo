@@ -44,7 +44,7 @@ func getTaskByID(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "não achei essa tarefinha"})
+	c.JSON(http.StatusNotFound, gin.H{"message": "produto não encontrado"})
 }
 
 func createTask(c *gin.Context) {
@@ -71,7 +71,7 @@ func updateTask(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "tarefinha não encontrada"})
+	c.JSON(http.StatusNotFound, gin.H{"message": "produto não encontrado"})
 }
 
 func deleteTask(c *gin.Context) {
@@ -79,9 +79,9 @@ func deleteTask(c *gin.Context) {
 	for i := range tasks {
 		if fmt.Sprintf("%d", tasks[i].ID) == id {
 			tasks = append(tasks[:i], tasks[i+1:]...)
-			c.JSON(http.StatusOK, gin.H{"message": "tarefinha removida"})
+			c.JSON(http.StatusOK, gin.H{"message": "produto deletado"})
 			return
 		}
 	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "tarefinha não encontrada"})
+	c.JSON(http.StatusNotFound, gin.H{"message": "produto não encontrado"})
 }
