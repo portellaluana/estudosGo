@@ -10,26 +10,25 @@ import (
 
 type Task struct {
 	ID     int    `json:"id"`
-	Name  string `json:"name"`
+	Name   string `json:"name"`
 	Status string `json:"status"`
+	Stock  int    `json:"stock"` // Certifique-se de que esse campo existe
 }
 
 var tasks = []Task{}
-
 var nextID = 1
 
 func main() {
-    r := gin.Default()
+	r := gin.Default()
+	r.Use(cors.Default())
 
-    r.Use(cors.Default())
+	r.GET("/tasks", getTasks)
+	r.GET("/tasks/:id", getTaskByID)
+	r.POST("/tasks", createTask)
+	r.PUT("/tasks/:id", updateTask)
+	r.DELETE("/tasks/:id", deleteTask)
 
-    r.GET("/tasks", getTasks)
-    r.GET("/tasks/:id", getTaskByID)
-    r.POST("/tasks", createTask)
-    r.PUT("/tasks/:id", updateTask)
-    r.DELETE("/tasks/:id", deleteTask)
-
-    r.Run(":8080")
+	r.Run(":8080")
 }
 
 func getTasks(c *gin.Context) {

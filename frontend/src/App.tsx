@@ -9,10 +9,12 @@ interface Task {
   id: number;
   name: string;
   status: string;
+  stock: number | string;
 }
 
 function App() {
   const [taskName, setTaskName] = useState("");
+  const [stock, setStock] = useState<number | string>("");
   const [isNew, setIsNew] = useState(true);
   const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -28,6 +30,10 @@ function App() {
     setTaskName(e.target.value);
   };
 
+  const handleStockChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStock(Number(e.target.value));
+  };
+
   const handleCheckboxChange = () => {
     setIsNew((prev) => !prev);
   };
@@ -40,7 +46,11 @@ function App() {
   };
 
   const handleEdit = async (id: number) => {
-    const updatedTask = { name: "Nova tarefa editada", status: "novo" };
+    const updatedTask = {
+      name: "",
+      status: "",
+      stock: 0,
+    };
     const task = await editTask(id, updatedTask);
     if (task) {
       setTasks(tasks.map((t) => (t.id === id ? task : t)));
@@ -48,14 +58,15 @@ function App() {
   };
 
   const handleAddTask = async () => {
-    if (taskName.trim() === "") return;
+    if (taskName.trim() === "" || stock < 0) return;
 
-    const newTask = { name: taskName, status: isNew ? "novo" : "usado" };
+    const newTask = { name: taskName, status: isNew ? "novo" : "usado", stock };
     const createdTask = await createTask(newTask);
 
     if (createdTask) {
       setTasks((prevTasks) => [...prevTasks, createdTask]);
       setTaskName("");
+      setStock("");
       setIsNew(true);
     }
   };
@@ -68,12 +79,7 @@ function App() {
         justifyContent: "center",
       }}
     >
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
         Lojinha em Go
       </h1>
       <div
@@ -88,7 +94,12 @@ function App() {
         <Input
           value={taskName}
           onChange={handleNameChange}
-          placeholder="Digite o nome do produto"
+          placeholder="Produto"
+        />
+        <Input
+          value={stock.toString()}
+          onChange={handleStockChange}
+          placeholder="Quantidade"
         />
         <Checkbox
           checked={isNew}
@@ -107,6 +118,7 @@ function App() {
                 id={task.id}
                 name={task.name}
                 status={task.status}
+                stock={task.stock}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
               />
